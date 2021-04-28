@@ -1,0 +1,108 @@
+SELECT questions.question_text AS id, categories.category_title AS catogory
+FROM questions
+    JOIN categories ON questions.question_category_fk = categories.category_id
+    JOIN categories ON questions.question_category_fk = categories.category_id
+WHERE a.country_id = 1 AND at.id <> oat.type_id;
+
+
+SELECT questions.question_id AS id, categories.category_title AS category, types.type_title AS type, difficulties.difficulty_title AS difficulty, questions.question_text AS question, answers.answer_text AS correct_answer, questions.question_created AS created
+FROM questions
+    JOIN categories ON questions.question_category_fk = categories.category_id
+    JOIN types ON questions.question_type_fk = types.type_id
+    JOIN difficulties ON questions.question_difficulty_fk = difficulties.difficulty_id
+    JOIN answers ON questions.question_id = answers.answer_question_fk WHERE answers.answer_is_correct = TRUE
+
+
+    SELECT answer_id, GROUP_CONCAT(answer_question_fk, answer_text) FROM answers GROUP BY answer_id
+
+
+
+SELECT questions.question_id AS id, categories.category_title AS category, types.type_title AS type, difficulties.difficulty_title AS difficulty, questions.question_text AS question, GROUP_CONCAT(answers.answer_text) AS correct_answer, questions.question_created AS created
+FROM questions
+    JOIN categories ON questions.question_category_fk = categories.category_id
+    JOIN types ON questions.question_type_fk = types.type_id
+    JOIN difficulties ON questions.question_difficulty_fk = difficulties.difficulty_id
+    JOIN answers ON questions.question_id = answers.answer_question_fk WHERE answers.answer_is_correct = TRUE
+
+
+
+
+
+    SELECT questions.question_id AS id, categories.category_title AS category, types.type_title AS type, difficulties.difficulty_title AS difficulty, questions.question_text AS question, 
+
+GROUP_CONCAT(CONCAT('{name:"', answers.answer_text, '", phone:"',answers.answer_text,'"}')) AS correct_answer, 
+questions.question_created AS created
+FROM questions
+    JOIN categories ON questions.question_category_fk = categories.category_id
+    JOIN types ON questions.question_type_fk = types.type_id
+    JOIN difficulties ON questions.question_difficulty_fk = difficulties.difficulty_id
+    JOIN answers ON questions.question_id = answers.answer_question_fk
+    GROUP BY questions.question_id
+
+
+SELECT questions.question_id AS id, categories.category_title AS category, types.type_title AS type, difficulties.difficulty_title AS difficulty, questions.question_text AS question, 
+
+GROUP_CONCAT(CONCAT('{name:"', answers.answer_text, '"}')) AS correct_answer, 
+questions.question_created AS created
+FROM questions
+    JOIN categories ON questions.question_category_fk = categories.category_id
+    JOIN types ON questions.question_type_fk = types.type_id
+    JOIN difficulties ON questions.question_difficulty_fk = difficulties.difficulty_id
+    JOIN answers ON questions.question_id = answers.answer_question_fk
+    GROUP BY questions.question_id
+
+
+
+
+
+SELECT questions.question_id AS id, categories.category_title AS category, types.type_title AS type, difficulties.difficulty_title AS difficulty, questions.question_text AS question, 
+
+GROUP_CONCAT(CONCAT('{name:"', i.answer_text, '"}')) AS correct_answer, c.answer_text AS correct,
+questions.question_created AS created
+FROM questions
+    JOIN categories ON questions.question_category_fk = categories.category_id
+    JOIN types ON questions.question_type_fk = types.type_id
+    JOIN difficulties ON questions.question_difficulty_fk = difficulties.difficulty_id
+    JOIN answers i ON questions.question_id = i.answer_question_fk
+    JOIN answers c ON questions.question_id = c.answer_question_fk WHERE c.answer_is_correct=TRUE
+    GROUP BY questions.question_id
+
+
+
+
+
+SELECT
+    questions.question_id AS id,
+    categories.category_title AS category,
+    types.type_title AS type,
+    difficulties.difficulty_title AS difficulty,
+    questions.question_text AS question,
+    c.answer_text AS correct,
+    GROUP_CONCAT(CONCAT('{name:"', i.answer_text, '"}')) AS incorrect_answers,
+    questions.question_created AS created
+FROM questions
+    JOIN categories ON questions.question_category_fk = categories.category_id
+    JOIN types ON questions.question_type_fk = types.type_id
+    JOIN difficulties ON questions.question_difficulty_fk = difficulties.difficulty_id
+    JOIN answers i ON questions.question_id = i.answer_question_fk AND i.answer_is_correct=FALSE 
+    JOIN answers c ON questions.question_id = c.answer_question_fk AND c.answer_is_correct=TRUE
+GROUP BY questions.question_id
+
+
+
+SELECT
+    questions.question_id AS id,
+    GROUP_CONCAT(users.user_first_name,' ', users.user_last_name) AS author,
+    categories.category_title AS category,
+    types.type_title AS type,
+    difficulties.difficulty_title AS difficulty,
+    questions.question_text AS question,
+    answers.answer_text AS correct_answer,
+    questions.question_created AS created
+FROM questions
+    JOIN users ON questions.question_user_fk = users.user_id
+    JOIN categories ON questions.question_category_fk = categories.category_id
+    JOIN types ON questions.question_type_fk = types.type_id
+    JOIN difficulties ON questions.question_difficulty_fk = difficulties.difficulty_id
+    JOIN answers ON questions.question_id = answers.answer_question_fk AND answers.answer_is_correct=TRUE
+GROUP BY questions.question_id
